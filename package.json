@@ -4,7 +4,8 @@
   "description": "Been playing minesweeper alot. Figured I'd make my own minesweeper web app as a cute lil exercise. Hey recruiters (;",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mon": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,11 @@
   "bugs": {
     "url": "https://github.com/Gherrer1/minesweeper/issues"
   },
-  "homepage": "https://github.com/Gherrer1/minesweeper#readme"
+  "homepage": "https://github.com/Gherrer1/minesweeper#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  }
 }
