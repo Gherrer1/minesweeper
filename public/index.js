@@ -1,8 +1,8 @@
-function getMatrix() {
+function getMatrix(rows = 16, cols = 30) {
   let matrix = [];
-  for(let i = 0; i < 16; i++) {
-    matrix[i] = new Array(30);
-    for(let j = 0; j < 30; j++) {
+  for(let i = 0; i < rows; i++) {
+    matrix[i] = new Array(cols);
+    for(let j = 0; j < cols; j++) {
       matrix[i][j] = 0;
     }
   }
@@ -64,6 +64,19 @@ function initGame(matrix, firstClickX, firstClickY, maxNumMines = 100) {
 
 (function() {
   let matrix = getMatrix();
-  initGame(matrix, 14, 14);
-  console.log(matrix);
+  initGame(matrix, 10, 10);
+  // add buttons
+  const app = document.getElementById("app");
+  console.log(app);
+  matrix.forEach(row => {
+      let rowDiv = document.createElement("div");
+      row.forEach(colNum => {
+        let button = document.createElement("button");
+        button.setAttribute('class', 'cell');
+        button.innerHTML = colNum;
+        rowDiv.appendChild(button);
+      });
+      app.appendChild(rowDiv);
+  });
+
 })();
