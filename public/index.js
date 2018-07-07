@@ -61,22 +61,53 @@ function initGame(matrix, firstClickX, firstClickY, maxNumMines = 100) {
   numberMarkMatrix(matrix);
 }
 
+function handleCellClick() {
+  let btn = this;
+  let btnClass = btn.className;
+  let coordinates = btnClass.split(' ')[0].split('_').map(coordinateStr => Number(coordinateStr));
+  console.log(coordinates);
+}
+
+function getFreshNewGrid(rows = 16, cols = 30) {
+  const gridDiv = document.createElement('div');
+  gridDiv.id = 'grid-div';
+
+  for(let i = 0; i < rows; i++) {
+    let rowDiv = document.createElement('div');
+    rowDiv.setAttribute('class', 'gridRow');
+
+    for(let j = 0; j < cols; j++) {
+      let button = document.createElement('button');
+      button.setAttribute('class', `${i}_${j} cell`);
+      button.addEventListener('click', handleCellClick);
+      // button.innerHTML = colNum;
+      rowDiv.appendChild(button);
+    }
+    gridDiv.appendChild(rowDiv);
+  }
+  return gridDiv;
+}
+
 
 (function() {
-  let matrix = getMatrix();
-  initGame(matrix, 10, 10);
+  let ROWS = 16;
+  let COLS = 30;
+  let matrix = getMatrix(ROWS, COLS);
+  // instead what we should do is we should treat the matrix like a model
+  // and fill the page with like a grid and give each cell an id indicating its coordinates
+
+  // alternative to getFreshNewGrid: only add grid to DOM once, and upon new game, just reset classes so that the grid looks untouched
+  // because at the end of the day, the most important part of starting a new game is getting a fresh matrix that will be represented
+  // by the grid. The grid itself is merely the face of the matrix. There's no need to create a new one each time.
+  // however, I already wrote the code, and it's only 30x16 cells anyway, so I'll stick with it.
+  // Just know that I considered the (smarter tbh) alternative
+  let gridDomElement = getFreshNewGrid(ROWS, COLS);
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.appendChild( gridDomElement );
+
+  // initGame(matrix, 10, 10);
   // add buttons
-  const app = document.getElementById("app");
   console.log(app);
-  matrix.forEach(row => {
-      let rowDiv = document.createElement("div");
-      row.forEach(colNum => {
-        let button = document.createElement("button");
-        button.setAttribute('class', 'cell');
-        button.innerHTML = colNum;
-        rowDiv.appendChild(button);
-      });
-      app.appendChild(rowDiv);
-  });
 
 })();
