@@ -10,6 +10,23 @@ class GameBoard extends React.Component {
     };
 
     this.updateMousedOver = this.updateMousedOver.bind(this);
+    this.processKeyDown = this.processKeyDown.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.processKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.processKeyDown);
+  }
+
+  processKeyDown(e) {
+    // we only want to log the key if there's a non-null actively moused on.
+    const keyPressed = e.key;
+    if(this.state.currentlyMousedOver !== null) {
+      console.log(`${keyPressed} was pressed while mousing over ${this.state.currentlyMousedOver}`);
+    }
   }
 
   updateMousedOver(char) {
