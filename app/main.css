@@ -1,3 +1,13 @@
 body {
   background: blue;
 }
+
+ul.row {
+  display: flex;
+  list-style-type: none;
+}
+
+.tile {
+  width: 30px;
+  height: 30px;
+}
