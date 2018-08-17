@@ -26,7 +26,7 @@ class GameBoard extends React.Component {
       exploredTilesMatrix: GameBoard.getNewExploredTilesMatrix()
     };
 
-    this.markTile = this.markTile.bind(this);
+    this.markTileSafe = this.markTileSafe.bind(this);
     this.updateMousedOver = this.updateMousedOver.bind(this);
     this.processKeyDown = this.processKeyDown.bind(this);
   }
@@ -53,23 +53,37 @@ class GameBoard extends React.Component {
     });
   }
 
-  markTile({ row, col }) {
+  markTileMine({ row, col }) {
+    // TODO
+  }
+
+  markTileSafe({ row, col }) {
     const exploredTilesMatrix = this.state.exploredTilesMatrix;
-    // if game state 'newgame', change to 'ongoing' and generate first-click-friendly mine statuses
+    const mineTilesMatrix = this.state.mineTilesMatrix;
+
     if(this.state.gameState === 'newgame') {
       let mineTilesMatrix = GameBoard.getNewMineTilesMatrix({ row, col });
       let exploredTilesMatrixClone = _.cloneDeep(exploredTilesMatrix);
       exploredTilesMatrixClone[row][col] = mineTilesMatrix[row][col];
+
       return this.setState({
         gameState: 'ongoing',
         mineTilesMatrix: mineTilesMatrix,
         exploredTilesMatrix: exploredTilesMatrixClone
       });
+    } else if(mineTilesMatrix[row][col] === 9 /* marked mine as safe*/) {
+      return this.setState({
+        gameState: 'lost', // TODO: revisit when working on LossGrid
+      });
+    } else if(2 === 2) {
+      console.log('marked safe as safe');
+      // check to see if we won
     } else {
       console.log('havent implemented yet');
     }
-    // if mark mine as mine, undo
     // if mark mine as safe, return
+    // what if we win?
+    // what happens if we hover over disabled (safe) tile?
   }
 
   render() {
@@ -88,7 +102,7 @@ class GameBoard extends React.Component {
         <p>Currently moused over: {this.state.currentlyMousedOver}</p>
 
         {this.state.gameState === 'ongoing' || this.state.gameState === 'newgame' ?
-          <PlayingGrid exploredTilesMatrix={this.state.exploredTilesMatrix} markTile={this.markTile} />
+          <PlayingGrid exploredTilesMatrix={this.state.exploredTilesMatrix} markTileSafe={this.markTileSafe} />
           :
           this.state.gameState === 'lost' ?
           'Lost'
