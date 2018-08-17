@@ -57,6 +57,7 @@ class GameBoard extends React.Component {
     // TODO
   }
 
+  // Assume that if it's marked as a mine, it's disabled
   markTileSafe({ row, col }) {
     const exploredTilesMatrix = this.state.exploredTilesMatrix;
     const mineTilesMatrix = this.state.mineTilesMatrix;
@@ -75,9 +76,15 @@ class GameBoard extends React.Component {
       return this.setState({
         gameState: 'lost', // TODO: revisit when working on LossGrid
       });
-    } else if(2 === 2) {
-      console.log('marked safe as safe');
-      // check to see if we won
+    } else if(mineTilesMatrix[row][col] < 9 /* marked safe as safe*/) {
+      return this.setState(prevState => {
+        let exploredTilesMatrixClone = _.cloneDeep(prevState.exploredTilesMatrix);
+        exploredTilesMatrixClone[row][col] = prevState.mineTilesMatrix[row][col];
+        return {
+          exploredTilesMatrix: exploredTilesMatrixClone
+        };
+      });
+      // TODO: check to see if we won after setting state
     } else {
       console.log('havent implemented yet');
     }
