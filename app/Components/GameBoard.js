@@ -21,13 +21,14 @@ class GameBoard extends React.Component {
     super(props);
 
     this.state = {
-      currentlyMousedOver: null,
       gameState: 'newgame',
       exploredTilesMatrix: GameBoard.getNewExploredTilesMatrix({
         rows: props.height,
         cols: props.width
       })
     };
+
+    this.currentlyMousedOver = null;
 
     this.markTileSafe = this.markTileSafe.bind(this);
     this.updateMousedOver = this.updateMousedOver.bind(this);
@@ -46,9 +47,9 @@ class GameBoard extends React.Component {
     const keyPressed = e.key;
     if(keyPressed !== ' ') return;
     this.setState(prevState => {
-      if(prevState.currentlyMousedOver === null)
+      if(this.currentlyMousedOver === null)
         return {};
-      let { row, col } = prevState.currentlyMousedOver;
+      let { row, col } = this.currentlyMousedOver;
       // if hovered tile is marked safe, return
       if(prevState.exploredTilesMatrix[row][col] >= 0 && prevState.exploredTilesMatrix[row][col] <= 8)
         return {};
@@ -63,9 +64,8 @@ class GameBoard extends React.Component {
   }
 
   updateMousedOver(coordinates) {
-    this.setState({
-      currentlyMousedOver: coordinates,
-    });
+    console.log(coordinates);
+    this.currentlyMousedOver = coordinates;
   }
 
   markTileMine({ row, col }) {
@@ -120,11 +120,6 @@ class GameBoard extends React.Component {
   render() {
     return (
       <div>
-        <div id="mouseover-region">
-
-        </div>
-        <p>Currently moused over: {`${JSON.stringify(this.state.currentlyMousedOver)}`}</p>
-
         {this.state.gameState === 'ongoing' || this.state.gameState === 'newgame' ?
           <PlayingGrid
             exploredTilesMatrix={this.state.exploredTilesMatrix}
@@ -138,12 +133,6 @@ class GameBoard extends React.Component {
           :
           'Won'
         }
-        {/* If game isnt over, show playingGrid
-          <PlayingGrid
-            exploredTilesMatrix={this.state.exploredTilesMatrix}
-          />
-        */}
-        {/* If game IS over, show wonGrid or lostGrid */}
       </div>
     );
   }
