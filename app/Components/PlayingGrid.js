@@ -20,15 +20,17 @@ function PlayingGridRow({ exploredTilesRow, rowNumber, markTileSafe, hoverOverTi
 
 function PlayingGrid({ exploredTilesMatrix, markTileSafe, hoverOverTile }) {
   return (
-    <ul className="grid">
+    <ul className="grid" id="mouseover-region">
       {exploredTilesMatrix.map((row, index) => (
-        <PlayingGridRow
-          key={index}
-          rowNumber={index}
-          exploredTilesRow={row}
-          markTileSafe={markTileSafe}
-          hoverOverTile={hoverOverTile}
-        />
+        <li>
+          <PlayingGridRow
+            key={index}
+            rowNumber={index}
+            exploredTilesRow={row}
+            markTileSafe={markTileSafe}
+            hoverOverTile={hoverOverTile}
+          />
+        </li>
       ))}
     </ul>
   );

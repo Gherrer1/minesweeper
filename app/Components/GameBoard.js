@@ -113,6 +113,7 @@ class GameBoard extends React.Component {
             exploredTilesMatrix={this.state.exploredTilesMatrix}
             markTileSafe={this.markTileSafe}
             hoverOverTile={this.updateMousedOver}
+            id="mouseover-region"
           />
           :
           this.state.gameState === 'lost' ?
