@@ -1,12 +1,19 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 const PlayingGrid = require('./PlayingGrid');
+const _ = require('lodash');
 
 /*
   Explored statuses:
   -1: unexplored
   0-8: marked as safe
   9: marked as mine
+*/
+
+/*
+  Mine statuses:
+  0-8: safe and show number of surrounding mines
+  9: mine
 */
 
 class GameBoard extends React.Component {
@@ -19,6 +26,7 @@ class GameBoard extends React.Component {
       exploredTilesMatrix: GameBoard.getNewExploredTilesMatrix()
     };
 
+    this.markTile = this.markTile.bind(this);
     this.updateMousedOver = this.updateMousedOver.bind(this);
     this.processKeyDown = this.processKeyDown.bind(this);
   }
@@ -46,7 +54,23 @@ class GameBoard extends React.Component {
   }
 
   markTile({ row, col }) {
-    console.log(row, col);
+    // if game state 'newgame', change to 'ongoing' and generate first-click-friendly mine statuses
+    if(this.state.gameState === 'newgame') {
+      let mineTilesMatrix = GameBoard.getNewMineTilesMatrix({ row, col });
+      let exploredTilesMatrixClone = _.cloneDeep(this.state.exploredTilesMatrix);
+      exploredTilesMatrixClone[row][col] = mineTilesMatrix[row][col];
+      return this.setState({
+        gameState: 'ongoing',
+        mineTilesMatrix: mineTilesMatrix,
+        exploredTilesMatrix: exploredTilesMatrixClone
+      });
+      // you're kinda gonna need to open the explored one too
+    } else {
+      console.log('havent implemented yet');
+    }
+    // if already safe, return
+    // if mark mine as mine, undo
+    // if mark mine as safe, return
   }
 
   render() {
@@ -99,6 +123,65 @@ GameBoard.getNewExploredTilesMatrix = function() {
     }
   }
   return matrix;
+};
+GameBoard.getNewMineTilesMatrix = function(firstClick) {
+  let matrix = [];
+  for(let i = 0; i < 16; i++) {
+    matrix[i] = new Array(30);
+    for(let j = 0; j < 30; j++) {
+      matrix[i][j] = 0;
+    }
+  }
+
+  GameBoard.randomlyAdd100Mines(matrix, firstClick);
+  GameBoard.numberMarkMatrix(matrix);
+  return matrix;
+};
+GameBoard.randomlyAdd100Mines = function(matrix, firstClick) {
+  function createMine(matrix, firstClickX, firstClickY) {
+    let xMax = matrix[0].length;
+    let yMax = matrix.length;
+    let mineX = Math.floor(Math.random() * xMax);
+    let mineY = Math.floor(Math.random() * yMax);
+    // if theres already a mine, dont add mine
+    if(matrix[mineY][mineX] !== 0) {
+      return false;
+    }
+    // if random spot falls in the 3x3 initial restricted zone, dont add mine
+    if(mineX >= firstClickX - 1 &&  mineX <= firstClickX + 1 && mineY >= firstClickY - 1 && mineY <= firstClickY + 1) {
+      return false;
+    }
+    matrix[mineY][mineX] = 9;
+    return true;
+  }
+
+  let numMines = 0;
+  let firstClickX = firstClick.col;
+  let firstClickY = firstClick.row;
+  while(numMines < 100) { // configurable
+    if(createMine(matrix, firstClickX, firstClickY)) {
+      numMines++;
+    }
+  }
+  return matrix;
+};
+GameBoard.numberMarkMatrix = function(matrix) {
+  for(let r = 0; r < matrix.length; r++) {
+    for(let c = 0; c < matrix[0].length; c++) {
+      // if its a mine, no need to count. Continue.
+      if(matrix[r][c] === 9) continue;
+
+      let numSurroundingMines = 0;
+      for(let xd = -1; xd <= 1; xd++) {
+        for(let yd = -1; yd <= 1; yd++) {
+          if(r + yd >= 0 && r + yd < matrix.length && c + xd >= 0 && c + xd < matrix[0].length && matrix[r + yd][c + xd] === 9) {
+            numSurroundingMines++;
+          }
+        }
+      }
+      matrix[r][c] = numSurroundingMines;
+    }
+  }
 };
 
 module.exports = GameBoard;
