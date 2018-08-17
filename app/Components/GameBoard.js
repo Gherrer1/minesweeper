@@ -72,8 +72,8 @@ class GameBoard extends React.Component {
     // TODO
   }
 
-  // Assume that if it's marked as a mine, it's disabled
   markTileSafe({ row, col }) {
+    // this.setState(prevState => {
     const exploredTilesMatrix = this.state.exploredTilesMatrix;
     const mineTilesMatrix = this.state.mineTilesMatrix;
 
@@ -87,6 +87,9 @@ class GameBoard extends React.Component {
         mineTilesMatrix: mineTilesMatrix,
         exploredTilesMatrix: exploredTilesMatrixClone
       });
+    } else if(exploredTilesMatrix[row][col] === 9 /* tile is already marked as mine */) {
+      console.log('not doing anything, this tiles already a mine');
+      return;
     } else if(mineTilesMatrix[row][col] === 9 /* marked mine as safe*/) {
       return this.setState({
         gameState: 'lost', // TODO: revisit when working on LossGrid
@@ -108,8 +111,10 @@ class GameBoard extends React.Component {
     } else {
       console.log('havent implemented yet');
     }
+    // });
     // if mark mine as safe, return
     // what happens if we hover over disabled (safe) tile?
+    // WARNING: if we hover over a disabled tile, the last non disabled tile will stil be stored. It seems like we might need a leave event for each tile
   }
 
   render() {
