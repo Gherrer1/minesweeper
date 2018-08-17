@@ -1,6 +1,6 @@
 const React = require('react');
 const PropTypes = require('prop-types');
-const PlayingTile = require('./PlayingTile');
+const PlayingGrid = require('./PlayingGrid');
 
 /*
   Explored statuses:
@@ -70,16 +70,9 @@ class GameBoard extends React.Component {
           ))}
         </div>
         <p>Currently moused over: {this.state.currentlyMousedOver}</p>
-        <ul className="row">
-          <PlayingTile mineStatus={5} exploredStatus={1} />
-          <PlayingTile mineStatus={5} exploredStatus={-1} />
-          <PlayingTile mineStatus={9} exploredStatus={-1} />
-          <PlayingTile mineStatus={9} exploredStatus={1} />
-          <PlayingTile mineStatus={5} exploredStatus={0} />
-          <PlayingTile mineStatus={9} exploredStatus={0} />
-        </ul>
+
         {this.state.gameState === 'ongoing' || this.state.gameState === 'newgame' ?
-          'PlayingGrid'
+          <PlayingGrid exploredTilesMatrix={this.state.exploredTilesMatrix} />
           :
           this.state.gameState === 'lost' ?
           'Lost'

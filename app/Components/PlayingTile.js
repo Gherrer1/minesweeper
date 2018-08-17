@@ -1,24 +1,22 @@
 const React = require('react');
 
-// Explored Statuses:
-// -1 marked mine
-//  0 unexplored
-//  1 marked safe
-
-// MineStatuses
-// [0-8]: safe square w/ number = num surrounding tiles
-//     9: mine tile
+/*
+  Explored statuses:
+  -1: unexplored
+  0-8: marked as safe
+  9: marked as mine
+*/
 
 /* The assumption is that this type of tile only renders on a PlayingGrid, meaning the game is not over yet if this is rendering. */
-function PlayingTile({ mineStatus, exploredStatus }) {
+function PlayingTile({ exploredStatus }) {
   return (
     <li>
       <button className='tile'>
-        { exploredStatus === 0 ?
+        { exploredStatus === -1 ?
             ' '
             :
-            exploredStatus === 1 ?
-              mineStatus
+            exploredStatus < 9 ?
+              exploredStatus
               :
               'M'
         }
