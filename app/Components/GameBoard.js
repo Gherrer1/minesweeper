@@ -43,16 +43,28 @@ class GameBoard extends React.Component {
   }
 
   processKeyDown(e) {
-    // we only want to log the key if there's a non-null actively moused on.
     const keyPressed = e.key;
-    if(this.state.currentlyMousedOver !== null) {
-      console.log(`${keyPressed} was pressed while mousing over ${this.state.currentlyMousedOver}`);
-    }
+    if(keyPressed !== ' ') return;
+    this.setState(prevState => {
+      if(prevState.currentlyMousedOver === null)
+        return {};
+      let { row, col } = prevState.currentlyMousedOver;
+      // if hovered tile is marked safe, return
+      if(prevState.exploredTilesMatrix[row][col] >= 0 && prevState.exploredTilesMatrix[row][col] <= 8)
+        return {};
+      // hovered tile isnt marked safe, so toggle between unexplored and mine
+      let exploredTilesMatrixClone = _.cloneDeep(prevState.exploredTilesMatrix);
+      exploredTilesMatrixClone[row][col] = exploredTilesMatrixClone[row][col] === -1 ? 9 : -1;
+      return {
+        exploredTilesMatrix: exploredTilesMatrixClone
+      };
+    })
+    // WARNING: I'm guessing we'll still be able to click on mines. That shouldnt happen
   }
 
-  updateMousedOver(msg) {
+  updateMousedOver(coordinates) {
     this.setState({
-      currentlyMousedOver: msg
+      currentlyMousedOver: coordinates,
     });
   }
 
@@ -106,7 +118,7 @@ class GameBoard extends React.Component {
         <div id="mouseover-region" onMouseLeave={() => this.updateMousedOver(null)} >
 
         </div>
-        <p>Currently moused over: {this.state.currentlyMousedOver}</p>
+        <p>Currently moused over: {`${JSON.stringify(this.state.currentlyMousedOver)}`}</p>
 
         {this.state.gameState === 'ongoing' || this.state.gameState === 'newgame' ?
           <PlayingGrid
