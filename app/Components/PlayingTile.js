@@ -11,7 +11,7 @@ const React = require('react');
 function PlayingTile({ exploredStatus, handleClick, row, col }) {
   return (
     <li>
-      <button className='tile' onClick={() => handleClick({ row, col })}>
+      <button className='tile' disabled={exploredStatus >= 0 && exploredStatus <= 8} onClick={() => handleClick({ row, col })}>
         { exploredStatus === -1 ?
             ' '
             :

@@ -11,3 +11,8 @@ ul.row {
   width: 30px;
   height: 30px;
 }
+
+.tile:disabled {
+  background: grey;
+  color: white;
+}

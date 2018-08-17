@@ -54,21 +54,20 @@ class GameBoard extends React.Component {
   }
 
   markTile({ row, col }) {
+    const exploredTilesMatrix = this.state.exploredTilesMatrix;
     // if game state 'newgame', change to 'ongoing' and generate first-click-friendly mine statuses
     if(this.state.gameState === 'newgame') {
       let mineTilesMatrix = GameBoard.getNewMineTilesMatrix({ row, col });
-      let exploredTilesMatrixClone = _.cloneDeep(this.state.exploredTilesMatrix);
+      let exploredTilesMatrixClone = _.cloneDeep(exploredTilesMatrix);
       exploredTilesMatrixClone[row][col] = mineTilesMatrix[row][col];
       return this.setState({
         gameState: 'ongoing',
         mineTilesMatrix: mineTilesMatrix,
         exploredTilesMatrix: exploredTilesMatrixClone
       });
-      // you're kinda gonna need to open the explored one too
     } else {
       console.log('havent implemented yet');
     }
-    // if already safe, return
     // if mark mine as mine, undo
     // if mark mine as safe, return
   }
