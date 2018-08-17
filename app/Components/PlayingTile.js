@@ -8,10 +8,10 @@ const React = require('react');
 */
 
 /* The assumption is that this type of tile only renders on a PlayingGrid, meaning the game is not over yet if this is rendering. */
-function PlayingTile({ exploredStatus }) {
+function PlayingTile({ exploredStatus, handleClick, row, col }) {
   return (
     <li>
-      <button className='tile'>
+      <button className='tile' onClick={() => handleClick({ row, col })}>
         { exploredStatus === -1 ?
             ' '
             :

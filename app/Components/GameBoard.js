@@ -16,7 +16,7 @@ class GameBoard extends React.Component {
     this.state = {
       currentlyMousedOver: null,
       gameState: 'newgame',
-      exploredTilesMatrix: this.getNewExploredTilesMatrix()
+      exploredTilesMatrix: GameBoard.getNewExploredTilesMatrix()
     };
 
     this.updateMousedOver = this.updateMousedOver.bind(this);
@@ -39,21 +39,14 @@ class GameBoard extends React.Component {
     }
   }
 
-  getNewExploredTilesMatrix() {
-    let matrix = [];
-    for(let i = 0; i < 16; i++) {
-      matrix[i] = new Array(30);
-      for(let j = 0; j < 30; j++) {
-        matrix[i][j] = -1;
-      }
-    }
-    return matrix;
-  }
-
   updateMousedOver(char) {
     this.setState({
       currentlyMousedOver: char
     });
+  }
+
+  markTile({ row, col }) {
+    console.log(row, col);
   }
 
   render() {
@@ -72,7 +65,7 @@ class GameBoard extends React.Component {
         <p>Currently moused over: {this.state.currentlyMousedOver}</p>
 
         {this.state.gameState === 'ongoing' || this.state.gameState === 'newgame' ?
-          <PlayingGrid exploredTilesMatrix={this.state.exploredTilesMatrix} />
+          <PlayingGrid exploredTilesMatrix={this.state.exploredTilesMatrix} markTile={this.markTile} />
           :
           this.state.gameState === 'lost' ?
           'Lost'
@@ -96,6 +89,16 @@ GameBoard.propTypes = {
 GameBoard.defaultProps = {
   width: 30,
   height: 16
+};
+GameBoard.getNewExploredTilesMatrix = function() {
+  let matrix = [];
+  for(let i = 0; i < 16; i++) {
+    matrix[i] = new Array(30);
+    for(let j = 0; j < 30; j++) {
+      matrix[i][j] = -1;
+    }
+  }
+  return matrix;
 };
 
 module.exports = GameBoard;
