@@ -23,7 +23,10 @@ class GameBoard extends React.Component {
     this.state = {
       currentlyMousedOver: null,
       gameState: 'newgame',
-      exploredTilesMatrix: GameBoard.getNewExploredTilesMatrix()
+      exploredTilesMatrix: GameBoard.getNewExploredTilesMatrix({
+        rows: props.height,
+        cols: props.width
+      })
     };
 
     this.markTileSafe = this.markTileSafe.bind(this);
@@ -63,7 +66,7 @@ class GameBoard extends React.Component {
     const mineTilesMatrix = this.state.mineTilesMatrix;
 
     if(this.state.gameState === 'newgame') {
-      let mineTilesMatrix = GameBoard.getNewMineTilesMatrix({ row, col });
+      let mineTilesMatrix = GameBoard.getNewMineTilesMatrix({ row, col }, { rows: this.props.height, cols: this.props.width });
       let exploredTilesMatrixClone = _.cloneDeep(exploredTilesMatrix);
       exploredTilesMatrixClone[row][col] = mineTilesMatrix[row][col];
 
@@ -134,30 +137,30 @@ GameBoard.defaultProps = {
   width: 30,
   height: 16
 };
-GameBoard.getNewExploredTilesMatrix = function() {
+GameBoard.getNewExploredTilesMatrix = function({ rows, cols }) {
   let matrix = [];
-  for(let i = 0; i < 16; i++) {
-    matrix[i] = new Array(30);
-    for(let j = 0; j < 30; j++) {
+  for(let i = 0; i < rows; i++) {
+    matrix[i] = new Array(cols);
+    for(let j = 0; j < cols; j++) {
       matrix[i][j] = -1;
     }
   }
   return matrix;
 };
-GameBoard.getNewMineTilesMatrix = function(firstClick) {
+GameBoard.getNewMineTilesMatrix = function(firstClick, dims) {
   let matrix = [];
-  for(let i = 0; i < 16; i++) {
-    matrix[i] = new Array(30);
-    for(let j = 0; j < 30; j++) {
+  for(let i = 0; i < dims.rows; i++) {
+    matrix[i] = new Array(dims.cols);
+    for(let j = 0; j < dims.cols; j++) {
       matrix[i][j] = 0;
     }
   }
 
-  GameBoard.randomlyAdd100Mines(matrix, firstClick);
+  GameBoard.randomlyAddMines(matrix, firstClick);
   GameBoard.numberMarkMatrix(matrix);
   return matrix;
 };
-GameBoard.randomlyAdd100Mines = function(matrix, firstClick) {
+GameBoard.randomlyAddMines = function(matrix, firstClick) {
   function createMine(matrix, firstClickX, firstClickY) {
     let xMax = matrix[0].length;
     let yMax = matrix.length;
@@ -176,9 +179,11 @@ GameBoard.randomlyAdd100Mines = function(matrix, firstClick) {
   }
 
   let numMines = 0;
+  // TODO: rework this formula. Its good enough for now though
+  let MAX_NUM_MINES = Math.floor(.20 * matrix.length * matrix[0].length);
   let firstClickX = firstClick.col;
   let firstClickY = firstClick.row;
-  while(numMines < 100) { // configurable
+  while(numMines < MAX_NUM_MINES) {
     if(createMine(matrix, firstClickX, firstClickY)) {
       numMines++;
     }
