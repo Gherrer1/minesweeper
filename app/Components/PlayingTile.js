@@ -16,6 +16,7 @@ function PlayingTile({ exploredStatus, handleClick, row, col, handleMouseOver })
         disabled={exploredStatus >= 0 && exploredStatus <= 8}
         onClick={() => handleClick({ row, col })}
         onMouseOver={() => handleMouseOver({ row, col })}
+        onMouseLeave={() => handleMouseOver(null)}
       >
         { exploredStatus === -1 ?
             ' '

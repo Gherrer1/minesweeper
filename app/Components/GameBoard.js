@@ -120,7 +120,7 @@ class GameBoard extends React.Component {
   render() {
     return (
       <div>
-        <div id="mouseover-region" onMouseLeave={() => this.updateMousedOver(null)} >
+        <div id="mouseover-region">
 
         </div>
         <p>Currently moused over: {`${JSON.stringify(this.state.currentlyMousedOver)}`}</p>
