@@ -86,8 +86,13 @@ class GameBoard extends React.Component {
         return {
           exploredTilesMatrix: exploredTilesMatrixClone
         };
+      }, function cb() {
+        if(GameBoard.gameWon(this.state.mineTilesMatrix, this.state.exploredTilesMatrix)) {
+          this.setState({
+            gameState: 'won'
+          });
+        }
       });
-      // TODO: check to see if we won after setting state
     } else {
       console.log('havent implemented yet');
     }
@@ -207,6 +212,17 @@ GameBoard.numberMarkMatrix = function(matrix) {
       matrix[r][c] = numSurroundingMines;
     }
   }
+};
+GameBoard.gameWon = function(mineTilesMatrix, exploredTilesMatrix) {
+  for(var i = 0; i < mineTilesMatrix.length; i++) {
+    for(var j = 0; j < mineTilesMatrix[0].length; j++) {
+      if(mineTilesMatrix[i][j] < 9 && (exploredTilesMatrix[i][j] < 0 || exploredTilesMatrix[i][j] > 8)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 };
 
 module.exports = GameBoard;
