@@ -50,9 +50,9 @@ class GameBoard extends React.Component {
     }
   }
 
-  updateMousedOver(char) {
+  updateMousedOver(msg) {
     this.setState({
-      currentlyMousedOver: char
+      currentlyMousedOver: msg
     });
   }
 
@@ -97,7 +97,6 @@ class GameBoard extends React.Component {
       console.log('havent implemented yet');
     }
     // if mark mine as safe, return
-    // what if we win?
     // what happens if we hover over disabled (safe) tile?
   }
 
@@ -105,19 +104,16 @@ class GameBoard extends React.Component {
     return (
       <div>
         <div id="mouseover-region" onMouseLeave={() => this.updateMousedOver(null)} >
-          {['a', 'b', 'c'].map(char => (
-            <button
-              key={char}
-              onMouseOver={() => this.updateMousedOver(char)}
-            >
-              {char}
-            </button>
-          ))}
+
         </div>
         <p>Currently moused over: {this.state.currentlyMousedOver}</p>
 
         {this.state.gameState === 'ongoing' || this.state.gameState === 'newgame' ?
-          <PlayingGrid exploredTilesMatrix={this.state.exploredTilesMatrix} markTileSafe={this.markTileSafe} />
+          <PlayingGrid
+            exploredTilesMatrix={this.state.exploredTilesMatrix}
+            markTileSafe={this.markTileSafe}
+            hoverOverTile={this.updateMousedOver}
+          />
           :
           this.state.gameState === 'lost' ?
           'Lost'

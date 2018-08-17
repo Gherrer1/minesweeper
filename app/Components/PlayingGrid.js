@@ -1,7 +1,7 @@
 const React = require('react');
 const PlayingTile = require('./PlayingTile');
 
-function PlayingGridRow({ exploredTilesRow, rowNumber, markTileSafe }) {
+function PlayingGridRow({ exploredTilesRow, rowNumber, markTileSafe, hoverOverTile }) {
   return (
     <ul className="row">
       {exploredTilesRow.map((exploredTileStatus, col) => (
@@ -11,13 +11,14 @@ function PlayingGridRow({ exploredTilesRow, rowNumber, markTileSafe }) {
           handleClick={markTileSafe}
           row={rowNumber}
           col={col}
+          handleMouseOver={hoverOverTile}
         />
       ))}
     </ul>
   );
 }
 
-function PlayingGrid({ exploredTilesMatrix, markTileSafe }) {
+function PlayingGrid({ exploredTilesMatrix, markTileSafe, hoverOverTile }) {
   return (
     <ul className="grid">
       {exploredTilesMatrix.map((row, index) => (
@@ -26,6 +27,7 @@ function PlayingGrid({ exploredTilesMatrix, markTileSafe }) {
           rowNumber={index}
           exploredTilesRow={row}
           markTileSafe={markTileSafe}
+          hoverOverTile={hoverOverTile}
         />
       ))}
     </ul>
