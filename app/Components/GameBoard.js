@@ -50,8 +50,7 @@ class GameBoard extends React.Component {
       if(this.currentlyMousedOver === null)
         return {};
       let { row, col } = this.currentlyMousedOver;
-      // if hovered tile is marked safe, return
-      if(prevState.exploredTilesMatrix[row][col] >= 0 && prevState.exploredTilesMatrix[row][col] <= 8)
+      if(GameBoard.isTileMarkedSafe(prevState.exploredTilesMatrix[row][col]))
         return {};
       // hovered tile isnt marked safe, so toggle between unexplored and mine
       let exploredTilesMatrixClone = _.cloneDeep(prevState.exploredTilesMatrix);
@@ -64,7 +63,6 @@ class GameBoard extends React.Component {
   }
 
   updateMousedOver(coordinates) {
-    console.log(coordinates);
     this.currentlyMousedOver = coordinates;
   }
 
@@ -227,5 +225,8 @@ GameBoard.gameWon = function(mineTilesMatrix, exploredTilesMatrix) {
 
   return true;
 };
+GameBoard.isTileMarkedSafe = function(tileExploredStatus) {
+  return (tileExploredStatus >= 0 && tileExploredStatus <= 8);
+}
 
 module.exports = GameBoard;
