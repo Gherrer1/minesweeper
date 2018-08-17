@@ -2,12 +2,21 @@ const React = require('react');
 const PropTypes = require('prop-types');
 const PlayingTile = require('./PlayingTile');
 
+/*
+  Explored statuses:
+  -1: unexplored
+  0-8: marked as safe
+  9: marked as mine
+*/
+
 class GameBoard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentlyMousedOver: null
+      currentlyMousedOver: null,
+      gameState: 'newgame',
+      exploredTilesMatrix: this.getNewExploredTilesMatrix()
     };
 
     this.updateMousedOver = this.updateMousedOver.bind(this);
@@ -28,6 +37,17 @@ class GameBoard extends React.Component {
     if(this.state.currentlyMousedOver !== null) {
       console.log(`${keyPressed} was pressed while mousing over ${this.state.currentlyMousedOver}`);
     }
+  }
+
+  getNewExploredTilesMatrix() {
+    let matrix = [];
+    for(let i = 0; i < 16; i++) {
+      matrix[i] = new Array(30);
+      for(let j = 0; j < 30; j++) {
+        matrix[i][j] = -1;
+      }
+    }
+    return matrix;
   }
 
   updateMousedOver(char) {
@@ -58,6 +78,20 @@ class GameBoard extends React.Component {
           <PlayingTile mineStatus={5} exploredStatus={0} />
           <PlayingTile mineStatus={9} exploredStatus={0} />
         </ul>
+        {this.state.gameState === 'ongoing' || this.state.gameState === 'newgame' ?
+          'PlayingGrid'
+          :
+          this.state.gameState === 'lost' ?
+          'Lost'
+          :
+          'Won'
+        }
+        {/* If game isnt over, show playingGrid
+          <PlayingGrid
+            exploredTilesMatrix={this.state.exploredTilesMatrix}
+          />
+        */}
+        {/* If game IS over, show wonGrid or lostGrid */}
       </div>
     );
   }
