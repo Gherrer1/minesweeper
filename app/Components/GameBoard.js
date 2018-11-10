@@ -61,29 +61,25 @@ class GameBoard extends React.Component {
 
   handleKeyDown(e) {
     const keyPressed = e.key;
-    if(keyPressed !== ' ') return;
-    this.setState(prevState => {
-      if(this.currentlyMousedOver === null)
-        return {};
-      let { row, col } = this.currentlyMousedOver;
-      if(GameBoard.isTileMarkedSafe(prevState.exploredTilesMatrix[row][col]))
-        return {};
-      // hovered tile isnt marked safe, so toggle between unexplored and mine
-      let exploredTilesMatrixClone = _.cloneDeep(prevState.exploredTilesMatrix);
-      exploredTilesMatrixClone[row][col] = exploredTilesMatrixClone[row][col] === -1 ? 9 : -1;
-      return {
-        exploredTilesMatrix: exploredTilesMatrixClone
-      };
-    })
-    // WARNING: I'm guessing we'll still be able to click on mines. That shouldnt happen
+    if(keyPressed !== ' ' || typeof this.currentlyMousedOver !== 'number') return;
+
+    const { playerWon, playerLost, tileStates } = this.state;
+    if (playerWon || playerLost || typeof tileStates[this.currentlyMousedOver] === 'number' ) return;
+
+    // only allowed to mark an uncovered tile or a potential mine tile
+    const newTileStates = [
+      ...tileStates.slice(0, this.currentlyMousedOver),
+      tileStates[this.currentlyMousedOver] === ' ' ? 'm' : ' ',
+      ...tileStates.slice(this.currentlyMousedOver + 1),
+    ];
+
+    this.setState({
+      tileStates: newTileStates,
+    });
   }
 
   updateMousedOver(index) {
     this.currentlyMousedOver = index;
-  }
-
-  markTileAsMine(index) {
-    
   }
 
   render() {
@@ -95,7 +91,6 @@ class GameBoard extends React.Component {
             tiles={tileStates}
             hoverOverTile={this.updateMousedOver}
             inspectTile={this.inspectTile}
-            // id="mouseover-region"
           />
           {playerLost && 'You lost'}
           {playerWon && 'You won'}
