@@ -1,8 +1,12 @@
 import React from 'react';
 
-export default function Tile({ tileState }) {
-
+export default function Tile({ tileState, handleMouseOver, index }) {
     return (
-        <button>{tileState}</button>
+        <button
+            onMouseOver={() => handleMouseOver(index)}
+            onMouseLeave={() => handleMouseOver(null)}
+        >
+            {tileState}
+        </button>
     );
 }

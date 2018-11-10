@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import PlayingGrid from './PlayingGrid';
+import Grid from './Grid';
 import _ from 'lodash';
 import { getMineField, initTileStates } from '../utils/boardHelpers';
 
@@ -65,8 +65,9 @@ class GameBoard extends React.Component {
     // WARNING: I'm guessing we'll still be able to click on mines. That shouldnt happen
   }
 
-  updateMousedOver(coordinates) {
-    this.currentlyMousedOver = coordinates;
+  updateMousedOver(index) {
+    this.currentlyMousedOver = index;
+    console.log(index);
   }
 
   markTileMine({ row, col }) {
@@ -123,10 +124,10 @@ class GameBoard extends React.Component {
 
     return (
       <div>
-          <PlayingGrid
+          <Grid
             tiles={tileStates}
+            hoverOverTile={this.updateMousedOver}
             // markTileSafe={this.markTileSafe}
-            // hoverOverTile={this.updateMousedOver}
             // id="mouseover-region"
           />
       </div>

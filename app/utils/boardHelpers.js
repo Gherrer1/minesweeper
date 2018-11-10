@@ -11,9 +11,6 @@ export function getMineField(height, width, numMines = 100) {
     return grid;
 }
 
-// -1 = mine
-// 0-8 = showing num mines surrounding it
-// 9 = covered
 export function initTileStates(height, width) {
-    return (new Array(height * width)).fill(9);
+    return (new Array(height * width)).fill(' ');
 }

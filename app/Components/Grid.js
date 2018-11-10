@@ -18,14 +18,14 @@ function PlayingGridRow({ exploredTilesRow, rowNumber, markTileSafe, hoverOverTi
   );
 }
 
-function PlayingGrid({ tiles, markTileSafe, hoverOverTile }) {
+function Grid({ tiles, markTileSafe, hoverOverTile }) {
   return (
     <div className="grid" id="mouseover-region">
       {tiles.map((tileState, index) => (
-        <Tile key={index} tileState={tileState} />
+        <Tile key={index} tileState={tileState} handleMouseOver={hoverOverTile} index={index} />
       ))}
     </div>
   );
 }
 
-module.exports = PlayingGrid;
+module.exports = Grid;
