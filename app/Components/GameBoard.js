@@ -53,10 +53,11 @@ class GameBoard extends React.Component {
       });
     }
 
-    return this.setState({
+    return this.setState(prevState => ({
       tileStates: newTileStates,
-      playerWon: checkIfPlayerWon(mineField, newTileStates),
-    });
+      safeTilesLeft: prevState.safeTilesLeft - 1,
+      playerWon: prevState.safeTilesLeft === 1,
+    }));
   }
 
   handleKeyDown(e) {
@@ -83,10 +84,11 @@ class GameBoard extends React.Component {
   }
 
   render() {
-    const { tileStates, playerLost, playerWon } = this.state;
+    const { tileStates, playerLost, playerWon, safeTilesLeft } = this.state;
 
     return (
       <div>
+          <p>{safeTilesLeft} Safe Tiles Left</p>
           <Grid
             tiles={tileStates}
             hoverOverTile={this.updateMousedOver}

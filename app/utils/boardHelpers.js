@@ -23,6 +23,7 @@ export function getInitialState(height, width) {
         playerWon: false,
         mineField: getMineField(height, width, maxNumberOfMines),
         tileStates: initTileStates(height, width),
+        safeTilesLeft: height*width - maxNumberOfMines,
     };
 }
 
