@@ -1,7 +1,8 @@
-const React = require('react');
-const PropTypes = require('prop-types');
-const PlayingGrid = require('./PlayingGrid');
-const _ = require('lodash');
+import React from 'react';
+import PropTypes from 'prop-types';
+import PlayingGrid from './PlayingGrid';
+import _ from 'lodash';
+import { getMineField, initTileStates } from '../utils/boardHelpers';
 
 /*
   Explored statuses:
@@ -20,30 +21,32 @@ class GameBoard extends React.Component {
   constructor(props) {
     super(props);
 
+    const { height, width } = props;
+
     this.state = {
-      gameState: 'newgame',
-      exploredTilesMatrix: GameBoard.getNewExploredTilesMatrix({
-        rows: props.height,
-        cols: props.width
-      })
+      gameInProgress: false,
+      playerLost: false,
+      playerWon: false,
+      mineField: getMineField(height, width, 50),
+      tileStates: initTileStates(height, width),
     };
 
     this.currentlyMousedOver = null;
 
     this.markTileSafe = this.markTileSafe.bind(this);
     this.updateMousedOver = this.updateMousedOver.bind(this);
-    this.processKeyDown = this.processKeyDown.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.processKeyDown);
+    document.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.processKeyDown);
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  processKeyDown(e) {
+  handleKeyDown(e) {
     const keyPressed = e.key;
     if(keyPressed !== ' ') return;
     this.setState(prevState => {
@@ -116,21 +119,16 @@ class GameBoard extends React.Component {
   }
 
   render() {
+    const { tileStates } = this.state;
+
     return (
       <div>
-        {this.state.gameState === 'ongoing' || this.state.gameState === 'newgame' ?
           <PlayingGrid
-            exploredTilesMatrix={this.state.exploredTilesMatrix}
-            markTileSafe={this.markTileSafe}
-            hoverOverTile={this.updateMousedOver}
-            id="mouseover-region"
+            tiles={tileStates}
+            // markTileSafe={this.markTileSafe}
+            // hoverOverTile={this.updateMousedOver}
+            // id="mouseover-region"
           />
-          :
-          this.state.gameState === 'lost' ?
-          'Lost'
-          :
-          'Won'
-        }
       </div>
     );
   }
@@ -143,16 +141,7 @@ GameBoard.defaultProps = {
   width: 30,
   height: 16
 };
-GameBoard.getNewExploredTilesMatrix = function({ rows, cols }) {
-  let matrix = [];
-  for(let i = 0; i < rows; i++) {
-    matrix[i] = new Array(cols);
-    for(let j = 0; j < cols; j++) {
-      matrix[i][j] = -1;
-    }
-  }
-  return matrix;
-};
+
 GameBoard.getNewMineTilesMatrix = function(firstClick, dims) {
   let matrix = [];
   for(let i = 0; i < dims.rows; i++) {

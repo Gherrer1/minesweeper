@@ -1,20 +1,8 @@
 div.grid {
-  display: inline-block;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  width: 500px;
 }
 
-ul.row {
-  display: flex;
-  list-style-type: none;
-  padding-left: 0;
-  margin: 0;
-}
 
-.tile {
-  width: 30px;
-  height: 30px;
-}
 
-.tile:disabled {
-  background: grey;
-  color: white;
-}

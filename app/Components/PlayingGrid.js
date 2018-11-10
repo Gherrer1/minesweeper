@@ -1,5 +1,5 @@
-const React = require('react');
-const PlayingTile = require('./PlayingTile');
+import React from 'react';
+import Tile from './Tile';
 
 function PlayingGridRow({ exploredTilesRow, rowNumber, markTileSafe, hoverOverTile }) {
   return (
@@ -18,17 +18,11 @@ function PlayingGridRow({ exploredTilesRow, rowNumber, markTileSafe, hoverOverTi
   );
 }
 
-function PlayingGrid({ exploredTilesMatrix, markTileSafe, hoverOverTile }) {
+function PlayingGrid({ tiles, markTileSafe, hoverOverTile }) {
   return (
     <div className="grid" id="mouseover-region">
-      {exploredTilesMatrix.map((row, index) => (
-          <PlayingGridRow
-            key={index}
-            rowNumber={index}
-            exploredTilesRow={row}
-            markTileSafe={markTileSafe}
-            hoverOverTile={hoverOverTile}
-          />
+      {tiles.map((tileState, index) => (
+        <Tile key={index} tileState={tileState} />
       ))}
     </div>
   );
