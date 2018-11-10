@@ -4,7 +4,7 @@ const GameBoard = require('./GameBoard');
 class App extends React.Component {
   render() {
     return (
-      <GameBoard width={10} height={10} />
+      <GameBoard width={5} height={5} />
     );
   }
 }

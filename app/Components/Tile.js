@@ -6,6 +6,7 @@ export default function Tile({ tileState, handleMouseOver, inspectTile, index })
             onMouseOver={() => handleMouseOver(index)}
             onMouseLeave={() => handleMouseOver(null)}
             onClick={() => inspectTile(index)}
+            className="tile"
         >
             {tileState}
         </button>

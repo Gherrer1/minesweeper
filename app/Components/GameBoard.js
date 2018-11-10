@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Grid from './Grid';
 import _ from 'lodash';
-import { getInitialState } from '../utils/boardHelpers';
+import { getInitialState, checkIfPlayerWon, getNumSurroundingMines } from '../utils/boardHelpers';
 
 /*
   Explored statuses:
@@ -52,17 +52,24 @@ class GameBoard extends React.Component {
     if (playerWon || playerLost || tileStates[index] !== ' ') {
       return;
     }
+    
+    const newTileStates = [
+      ...tileStates.slice(0, index),
+      mineField[index] === true ? 'X' : getNumSurroundingMines(mineField, index, this.props.width),
+      ...tileStates.slice(index + 1),
+    ];
 
     // if its a mine, player lost
     if (mineField[index] === true) {
       return this.setState({
-        tileStates: [...tileStates.slice(0, index), 'X', ...tileStates.slice(index + 1)],
+        tileStates: newTileStates,
         playerLost: true,
       });
     }
 
     return this.setState({
-      tileStates: [...tileStates.slice(0, index), 'm', ...tileStates.slice(index + 1)],
+      tileStates: newTileStates,
+      playerWon: checkIfPlayerWon(mineField, newTileStates),
     });
   }
 
