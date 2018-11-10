@@ -33,9 +33,10 @@ class GameBoard extends React.Component {
 
     this.currentlyMousedOver = null;
 
-    this.markTileSafe = this.markTileSafe.bind(this);
+    this.resetGame = this.resetGame.bind(this);
     this.updateMousedOver = this.updateMousedOver.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    // this.markTileSafe = this.markTileSafe.bind(this);
   }
 
   componentDidMount() {
@@ -44,6 +45,16 @@ class GameBoard extends React.Component {
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  resetGame() {
+    this.setState({
+      gameInProgress: false,
+      playerLost: false,
+      playerWon: false,
+      mineField: getMineField(this.props.height, this.props.width, 50),
+      tileStates: initTileStates(this.props.height, this.props.width),
+    });
   }
 
   handleKeyDown(e) {
@@ -67,60 +78,59 @@ class GameBoard extends React.Component {
 
   updateMousedOver(index) {
     this.currentlyMousedOver = index;
-    console.log(index);
   }
 
-  markTileMine({ row, col }) {
-    // TODO
+  markTileAsMine(index) {
+    
   }
 
-  markTileSafe({ row, col }) {
-    // this.setState(prevState => {
-    const exploredTilesMatrix = this.state.exploredTilesMatrix;
-    const mineTilesMatrix = this.state.mineTilesMatrix;
+  // markTileSafe({ row, col }) {
+  //   // this.setState(prevState => {
+  //   const exploredTilesMatrix = this.state.exploredTilesMatrix;
+  //   const mineTilesMatrix = this.state.mineTilesMatrix;
 
-    if(this.state.gameState === 'newgame') {
-      let mineTilesMatrix = GameBoard.getNewMineTilesMatrix({ row, col }, { rows: this.props.height, cols: this.props.width });
-      let exploredTilesMatrixClone = _.cloneDeep(exploredTilesMatrix);
-      exploredTilesMatrixClone[row][col] = mineTilesMatrix[row][col];
+  //   if(this.state.gameState === 'newgame') {
+  //     let mineTilesMatrix = GameBoard.getNewMineTilesMatrix({ row, col }, { rows: this.props.height, cols: this.props.width });
+  //     let exploredTilesMatrixClone = _.cloneDeep(exploredTilesMatrix);
+  //     exploredTilesMatrixClone[row][col] = mineTilesMatrix[row][col];
 
-      return this.setState({
-        gameState: 'ongoing',
-        mineTilesMatrix: mineTilesMatrix,
-        exploredTilesMatrix: exploredTilesMatrixClone
-      });
-    } else if(exploredTilesMatrix[row][col] === 9 /* tile is already marked as mine */) {
-      console.log('not doing anything, this tiles already a mine');
-      return;
-    } else if(mineTilesMatrix[row][col] === 9 /* marked mine as safe*/) {
-      return this.setState({
-        gameState: 'lost', // TODO: revisit when working on LossGrid
-      });
-    } else if(mineTilesMatrix[row][col] < 9 /* marked safe as safe*/) {
-      return this.setState(prevState => {
-        let exploredTilesMatrixClone = _.cloneDeep(prevState.exploredTilesMatrix);
-        exploredTilesMatrixClone[row][col] = prevState.mineTilesMatrix[row][col];
-        return {
-          exploredTilesMatrix: exploredTilesMatrixClone
-        };
-      }, function cb() {
-        if(GameBoard.gameWon(this.state.mineTilesMatrix, this.state.exploredTilesMatrix)) {
-          this.setState({
-            gameState: 'won'
-          });
-        }
-      });
-    } else {
-      console.log('havent implemented yet');
-    }
-    // });
-    // if mark mine as safe, return
-    // what happens if we hover over disabled (safe) tile?
-    // WARNING: if we hover over a disabled tile, the last non disabled tile will stil be stored. It seems like we might need a leave event for each tile
-  }
+  //     return this.setState({
+  //       gameState: 'ongoing',
+  //       mineTilesMatrix: mineTilesMatrix,
+  //       exploredTilesMatrix: exploredTilesMatrixClone
+  //     });
+  //   } else if(exploredTilesMatrix[row][col] === 9 /* tile is already marked as mine */) {
+  //     console.log('not doing anything, this tiles already a mine');
+  //     return;
+  //   } else if(mineTilesMatrix[row][col] === 9 /* marked mine as safe*/) {
+  //     return this.setState({
+  //       gameState: 'lost', // TODO: revisit when working on LossGrid
+  //     });
+  //   } else if(mineTilesMatrix[row][col] < 9 /* marked safe as safe*/) {
+  //     return this.setState(prevState => {
+  //       let exploredTilesMatrixClone = _.cloneDeep(prevState.exploredTilesMatrix);
+  //       exploredTilesMatrixClone[row][col] = prevState.mineTilesMatrix[row][col];
+  //       return {
+  //         exploredTilesMatrix: exploredTilesMatrixClone
+  //       };
+  //     }, function cb() {
+  //       if(GameBoard.gameWon(this.state.mineTilesMatrix, this.state.exploredTilesMatrix)) {
+  //         this.setState({
+  //           gameState: 'won'
+  //         });
+  //       }
+  //     });
+  //   } else {
+  //     console.log('havent implemented yet');
+  //   }
+  //   // });
+  //   // if mark mine as safe, return
+  //   // what happens if we hover over disabled (safe) tile?
+  //   // WARNING: if we hover over a disabled tile, the last non disabled tile will stil be stored. It seems like we might need a leave event for each tile
+  // }
 
   render() {
-    const { tileStates } = this.state;
+    const { tileStates, playerLost, playerWon } = this.state;
 
     return (
       <div>
@@ -130,6 +140,9 @@ class GameBoard extends React.Component {
             // markTileSafe={this.markTileSafe}
             // id="mouseover-region"
           />
+          {playerLost && 'You lost'}
+          {playerWon && 'You won'}
+          <button onClick={this.resetGame}>New Game</button>
       </div>
     );
   }
