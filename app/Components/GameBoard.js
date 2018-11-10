@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Grid from './Grid';
 import _ from 'lodash';
-import { getMineField, initTileStates } from '../utils/boardHelpers';
+import { getInitialState } from '../utils/boardHelpers';
 
 /*
   Explored statuses:
@@ -23,17 +23,12 @@ class GameBoard extends React.Component {
 
     const { height, width } = props;
 
-    this.state = {
-      gameInProgress: false,
-      playerLost: false,
-      playerWon: false,
-      mineField: getMineField(height, width, 50),
-      tileStates: initTileStates(height, width),
-    };
+    this.state = getInitialState(height, width);
 
     this.currentlyMousedOver = null;
 
     this.resetGame = this.resetGame.bind(this);
+    this.inspectTile = this.inspectTile.bind(this);
     this.updateMousedOver = this.updateMousedOver.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     // this.markTileSafe = this.markTileSafe.bind(this);
@@ -48,12 +43,26 @@ class GameBoard extends React.Component {
   }
 
   resetGame() {
-    this.setState({
-      gameInProgress: false,
-      playerLost: false,
-      playerWon: false,
-      mineField: getMineField(this.props.height, this.props.width, 50),
-      tileStates: initTileStates(this.props.height, this.props.width),
+    const { height, width } = this.props;
+    this.setState(getInitialState(height, width));
+  }
+
+  inspectTile(index) {
+    const { playerWon, playerLost, tileStates, mineField } = this.state;
+    if (playerWon || playerLost || tileStates[index] !== ' ') {
+      return;
+    }
+
+    // if its a mine, player lost
+    if (mineField[index] === true) {
+      return this.setState({
+        tileStates: [...tileStates.slice(0, index), 'X', ...tileStates.slice(index + 1)],
+        playerLost: true,
+      });
+    }
+
+    return this.setState({
+      tileStates: [...tileStates.slice(0, index), 'm', ...tileStates.slice(index + 1)],
     });
   }
 
@@ -137,6 +146,7 @@ class GameBoard extends React.Component {
           <Grid
             tiles={tileStates}
             hoverOverTile={this.updateMousedOver}
+            inspectTile={this.inspectTile}
             // markTileSafe={this.markTileSafe}
             // id="mouseover-region"
           />
@@ -156,19 +166,6 @@ GameBoard.defaultProps = {
   height: 16
 };
 
-GameBoard.getNewMineTilesMatrix = function(firstClick, dims) {
-  let matrix = [];
-  for(let i = 0; i < dims.rows; i++) {
-    matrix[i] = new Array(dims.cols);
-    for(let j = 0; j < dims.cols; j++) {
-      matrix[i][j] = 0;
-    }
-  }
-
-  GameBoard.randomlyAddMines(matrix, firstClick);
-  GameBoard.numberMarkMatrix(matrix);
-  return matrix;
-};
 GameBoard.randomlyAddMines = function(matrix, firstClick) {
   function createMine(matrix, firstClickX, firstClickY) {
     let xMax = matrix[0].length;

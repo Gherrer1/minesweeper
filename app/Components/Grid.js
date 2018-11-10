@@ -18,11 +18,17 @@ function PlayingGridRow({ exploredTilesRow, rowNumber, markTileSafe, hoverOverTi
   );
 }
 
-function Grid({ tiles, markTileSafe, hoverOverTile }) {
+function Grid({ tiles, markTileSafe, hoverOverTile, inspectTile }) {
   return (
     <div className="grid" id="mouseover-region">
       {tiles.map((tileState, index) => (
-        <Tile key={index} tileState={tileState} handleMouseOver={hoverOverTile} index={index} />
+        <Tile
+          key={index}
+          tileState={tileState}
+          handleMouseOver={hoverOverTile}
+          index={index}
+          inspectTile={inspectTile}
+        />
       ))}
     </div>
   );
